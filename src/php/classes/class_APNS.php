@@ -296,6 +296,7 @@ class APNS {
 		// store device for push notifications
 		$this->db->query("SET NAMES 'utf8';"); // force utf8 encoding if not your default
 		$sql = "INSERT INTO `apns_devices`
+                                (pid,clientid,appname,appversion,deviceuid,devicetoken,devicename,devicemodel,deviceversion,pushbadge,pushalert,pushsound,development,status,created,modified)
 				VALUES (
 					NULL,
 					'{$clientid}',
@@ -712,6 +713,7 @@ class APNS {
 
 				$this->db->query("SET NAMES 'utf8';"); // force utf8 encoding if not your default
 				$sql = "INSERT INTO `apns_messages`
+	                                (pid,clientid,fk_device,message,delivery,status,created,modified)
 						VALUES (
 							NULL,
 							'{$clientId}',
