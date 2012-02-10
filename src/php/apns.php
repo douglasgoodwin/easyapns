@@ -49,6 +49,13 @@ host = "localhost"
 user = "dbuser"
 passwd = "dbpass"
 schema = "apns"
+
+[cert]
+production = "/var/www/certs/Production/apns-prod.pem"
+development = "/var/www/certs/Development/apns-dev.pem"
+
+[log]
+path = "/var/www/envs/easyapns/logs/apns.log"
 */
 
 $config = parse_ini_file('/var/www/envs/apns.ini', true);
