@@ -1,4 +1,3 @@
-#!/usr/bin/php
 <?PHP
 #################################################################################
 ## Developed by Manifest Interactive, LLC                                      ##
@@ -40,7 +39,20 @@ if(!function_exists("__autoload")){
 }
 
 // CREATE DATABASE OBJECT ( MAKE SURE TO CHANGE LOGIN INFO )
-$db = new DbConnect('localhost', 'apnsuser', 'apnspassword', 'apnsdb');
+# $db = new DbConnect('localhost', 'apnsuser', 'apnspassword', 'apnsdb');
+
+# use an ini file in the directory above this one
+# ../apns.ini should look like this:
+/*
+[db]
+host = "localhost"
+user = "dbuser"
+passwd = "dbpass"
+schema = "apns"
+*/
+
+$config = parse_ini_file('../apns.ini', true);
+$db = new DbConnect($config['db']['host'], $config['db']['user'], $config['db']['passwd'], $config['db']['schema']);
 $db->show_errors();
 
 // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
