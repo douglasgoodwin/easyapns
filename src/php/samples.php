@@ -39,11 +39,31 @@ if(!function_exists("__autoload")){
 }
 
 // CREATE DATABASE OBJECT ( MAKE SURE TO CHANGE LOGIN INFO IN CLASS FILE )
-$db = new DbConnect('localhost', 'apnsuser', 'apnspassword', 'apnsdb');
+# $db = new DbConnect('localhost', 'apnsuser', 'apnspassword', 'apnsdb');
+
+# use an ini file in the directory above this one
+# ../apns.ini should look like this:
+/*
+[db]
+host = "localhost"
+user = "dbuser"
+passwd = "dbpass"
+schema = "apns"
+*/
+
+$config = parse_ini_file('/var/www/envs/apns.ini', true);
+$certificate= $config['cert']['production'];
+$sandboxCertificate= $config['cert']['development'];
+$logPath=$config['log']['path'];
+$args =  array();
+
+$db = new DbConnect($config['db']['host'], $config['db']['user'], $config['db']['passwd'], $config['db']['schema']);
 $db->show_errors();
 
 // FETCH $_GET OR CRON ARGUMENTS TO AUTOMATE TASKS
-$apns = new APNS($db);
+# $apns = new APNS($db);
+$apns = new APNS($db, $args, $certificate, $sandboxCertificate,$logPath);
+
 
 /**
 /*	ACTUAL SAMPLES USING THE 'Examples of JSON Payloads' EXAMPLES (1-5) FROM APPLE'S WEBSITE.
@@ -51,13 +71,13 @@ $apns = new APNS($db);
  */
 
 // APPLE APNS EXAMPLE 1
-$apns->newMessage(1);
+$apns->newMessage(2);
 $apns->addMessageAlert('Message received from Bob');
 $apns->addMessageCustom('acme2', array('bang', 'whiz'));
 $apns->queueMessage();
 
 // APPLE APNS EXAMPLE 2
-$apns->newMessage(1, '2010-01-01 00:00:00'); // FUTURE DATE NOT APART OF APPLE EXAMPLE
+$apns->newMessage(2, '2010-01-01 00:00:00'); // FUTURE DATE NOT APART OF APPLE EXAMPLE
 $apns->addMessageAlert('Bob wants to play poker', 'PLAY');
 $apns->addMessageBadge(5);
 $apns->addMessageCustom('acme1', 'bar');
@@ -65,7 +85,7 @@ $apns->addMessageCustom('acme2', array('bang', 'whiz'));
 $apns->queueMessage();
 
 // APPLE APNS EXAMPLE 3
-$apns->newMessage(1);
+$apns->newMessage(2);
 $apns->addMessageAlert('You got your emails.');
 $apns->addMessageBadge(9);
 $apns->addMessageSound('bingbong.aiff');
@@ -74,14 +94,14 @@ $apns->addMessageCustom('acme2', 42);
 $apns->queueMessage();
 
 // APPLE APNS EXAMPLE 4
-$apns->newMessage(1, '2010-01-01 00:00:00');  // FUTURE DATE NOT APART OF APPLE EXAMPLE
+$apns->newMessage(2, '2010-01-01 00:00:00');  // FUTURE DATE NOT APART OF APPLE EXAMPLE
 $apns->addMessageAlert(NULL, NULL, 'GAME_PLAY_REQUEST_FORMAT', array('Jenna', 'Frank'));
 $apns->addMessageSound('chime');
 $apns->addMessageCustom('acme', 'foo');
 $apns->queueMessage();
 
 // APPLE APNS EXAMPLE 5
-$apns->newMessage(1);
+$apns->newMessage(2);
 $apns->addMessageCustom('acme2', array(5, 8));
 $apns->queueMessage();
 
