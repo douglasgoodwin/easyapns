@@ -51,7 +51,11 @@ passwd = "dbpass"
 schema = "apns"
 */
 
-$config = parse_ini_file('../apns.ini', true);
+$config = parse_ini_file('/var/www/envs/apns.ini', true);
+$certificate= $config['cert']['production'];
+$sandboxCertificate= $config['cert']['development'];
+$logPath=$config['log']['path'];
+
 $db = new DbConnect($config['db']['host'], $config['db']['user'], $config['db']['passwd'], $config['db']['schema']);
 $db->show_errors();
 
@@ -59,5 +63,6 @@ $db->show_errors();
 $args = (!empty($_GET)) ? $_GET:array('task'=>$argv[1]);
 
 // CREATE APNS OBJECT, WITH DATABASE OBJECT AND ARGUMENTS
-$apns = new APNS($db, $args);
-?>
+# $apns = new APNS($db, $args);
+$apns = new APNS($db, $args, $certificate, $sandboxCertificate,$logPath);
+
